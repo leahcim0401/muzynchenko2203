@@ -1,0 +1,29 @@
+name: CI
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  build-and-push:
+    name: Build
+    runs-on: ubuntu-latest
+
+    steps:
+
+      - name: Загрузка кода
+        uses: actions/checkout@v3
+
+
+      - name: Проверка кода flake8
+        run: |
+          pip install flake8
+          flake8 app.py --count --show-source --statistics
+
+
+      - name: Тестирование приложения
+        run: |
+          python app.py | grep "Hello, World!" || exit 1
+
+
