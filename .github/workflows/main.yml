@@ -30,8 +30,10 @@ jobs:
     - name: Validate Flask application
       run: |
         pip install flask
-        # Проверка, что Flask-приложение запускается
-        python -c "import app; assert hasattr(app, 'app')"
+        # Проверка существования файла и базовая синтаксическая проверка
+        python -c "import py_compile; py_compile.compile('app.py')"
+        # Запуск приложения с таймаутом (запускается в фоне и затем убивается)
+        timeout 5s python app.py || code=$?; if [[ $code -ne 124 && $code -ne 0 ]]; then exit $code; fi
         
     - name: Test Dockerfile validity
       run: |
